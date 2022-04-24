@@ -1,4 +1,4 @@
-package com.example.geomessages.http;
+package com.example.firebasemessages.http;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,7 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.geomessages.model.Message;
+import com.example.firebasemessages.model.Message;
 
 import org.json.JSONException;
 import org.json.JSONObject;

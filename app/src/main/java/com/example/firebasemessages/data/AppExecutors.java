@@ -1,4 +1,4 @@
-package com.example.geomessages.data;
+package com.example.firebasemessages.data;
 
 import android.os.Handler;
 import android.os.Looper;

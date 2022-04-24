@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_liste"
-        android:name="com.example.geomessages.ui.liste.ListeFragment"
+        android:name="com.example.firebasemessages.ui.liste.ListeFragment"
         android:label="@string/menu_liste"
         tools:layout="@layout/fragment_liste">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/nav_maps"
-        android:name="com.example.geomessages.ui.maps.MapsFragment"
+        android:name="com.example.firebasemessages.ui.maps.MapsFragment"
         android:label="@string/menu_maps"
         tools:layout="@layout/fragment_maps">
         <argument

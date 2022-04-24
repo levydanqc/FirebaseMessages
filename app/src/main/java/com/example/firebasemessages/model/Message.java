@@ -1,4 +1,4 @@
-package com.example.geomessages.model;
+package com.example.firebasemessages.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;

@@ -1,4 +1,4 @@
-package com.example.geomessages;
+package com.example.firebasemessages;
 
 import org.junit.Test;
 

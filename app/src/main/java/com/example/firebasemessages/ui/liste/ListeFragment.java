@@ -1,4 +1,4 @@
-package com.example.geomessages.ui.liste;
+package com.example.firebasemessages.ui.liste;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,11 +14,11 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.geomessages.R;
-import com.example.geomessages.data.MessagesRoomDatabase;
-import com.example.geomessages.databinding.FragmentListeBinding;
-import com.example.geomessages.model.Message;
-import com.example.geomessages.ui.MessageAdapter;
+import com.example.firebasemessages.R;
+import com.example.firebasemessages.data.MessagesRoomDatabase;
+import com.example.firebasemessages.databinding.FragmentListeBinding;
+import com.example.firebasemessages.model.Message;
+import com.example.firebasemessages.ui.MessageAdapter;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.geomessages.data;
+package com.example.firebasemessages.data;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.geomessages.model.Message;
+import com.example.firebasemessages.model.Message;
 
 import java.util.List;
 

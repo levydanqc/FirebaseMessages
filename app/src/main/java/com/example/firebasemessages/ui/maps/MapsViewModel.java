@@ -1,13 +1,13 @@
-package com.example.geomessages.ui.maps;
+package com.example.firebasemessages.ui.maps;
 
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.geomessages.data.AppExecutors;
-import com.example.geomessages.data.MessagesRoomDatabase;
-import com.example.geomessages.model.Message;
+import com.example.firebasemessages.data.AppExecutors;
+import com.example.firebasemessages.data.MessagesRoomDatabase;
+import com.example.firebasemessages.model.Message;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;

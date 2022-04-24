@@ -1,4 +1,4 @@
-package com.example.geomessages.ui.maps;
+package com.example.firebasemessages.ui.maps;
 
 import static java.lang.Double.parseDouble;
 
@@ -27,9 +27,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.geomessages.R;
-import com.example.geomessages.databinding.FragmentMapsBinding;
-import com.example.geomessages.model.Message;
+import com.example.firebasemessages.R;
+import com.example.firebasemessages.databinding.FragmentMapsBinding;
+import com.example.firebasemessages.model.Message;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;

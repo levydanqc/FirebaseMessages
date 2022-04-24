@@ -1,4 +1,4 @@
-package com.example.geomessages.ui;
+package com.example.firebasemessages.ui;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.geomessages.R;
-import com.example.geomessages.model.Message;
+import com.example.firebasemessages.R;
+import com.example.firebasemessages.model.Message;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 

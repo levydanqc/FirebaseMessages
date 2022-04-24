@@ -1,4 +1,4 @@
-package com.example.geomessages;
+package com.example.firebasemessages;
 
 import android.content.Intent;
 import android.os.Bundle;

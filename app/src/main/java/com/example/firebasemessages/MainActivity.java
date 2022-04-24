@@ -1,4 +1,4 @@
-package com.example.geomessages;
+package com.example.firebasemessages;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,12 +19,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.geomessages.data.AppExecutors;
-import com.example.geomessages.data.MessagesRoomDatabase;
-import com.example.geomessages.databinding.ActivityMainBinding;
-import com.example.geomessages.http.VolleyUtils;
-import com.example.geomessages.model.Message;
-import com.example.geomessages.ui.liste.ListeViewModel;
+import com.example.firebasemessages.data.AppExecutors;
+import com.example.firebasemessages.data.MessagesRoomDatabase;
+import com.example.firebasemessages.databinding.ActivityMainBinding;
+import com.example.firebasemessages.http.VolleyUtils;
+import com.example.firebasemessages.model.Message;
+import com.example.firebasemessages.ui.liste.ListeViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
