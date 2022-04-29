@@ -98,18 +98,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_delete:
-                AppExecutors.getInstance().diskIO().execute(() -> {
-                    mDb.messageDao().deleteAll();
-                });
-                return true;
-            case R.id.action_settings:
-                Intent settings = new Intent(this, ConfigActivity.class);
-                settings.putExtra(getString(R.string.nav_header_prenom), tvPrenom.getText().toString());
-                settings.putExtra(getString(R.string.nav_header_nom), tvNom.getText().toString());
-                startActivityForResult(settings, REQUEST_CODE);
-                return true;
+        if (item.getItemId() == R.id.action_settings) {
+            Intent settings = new Intent(this, ConfigActivity.class);
+            settings.putExtra(getString(R.string.nav_header_prenom), tvPrenom.getText().toString());
+            settings.putExtra(getString(R.string.nav_header_nom), tvNom.getText().toString());
+            startActivityForResult(settings, REQUEST_CODE);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

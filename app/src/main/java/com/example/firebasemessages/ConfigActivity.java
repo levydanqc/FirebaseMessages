@@ -23,6 +23,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
         createComponents();
 
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setTitle("Configuration");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
