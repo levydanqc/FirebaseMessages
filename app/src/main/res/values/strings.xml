@@ -13,8 +13,9 @@
     <string name="menu_maps">Carte</string>
     <string name="action_delete">Suppression</string>
     <string name="title_activity_config">ConfigActivity</string>
+    <string name="login">Se connecter</string>
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
+    <string name="prompt_password">Mot de passe</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>

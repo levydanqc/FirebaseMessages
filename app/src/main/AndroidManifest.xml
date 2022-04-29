@@ -14,10 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirebaseMessages">
         <activity
-            android:name="com.example.firebasemessages.ConfigActivity"
+            android:name=".Authentication"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ConfigActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.firebasemessages.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.FirebaseMessages">
             <intent-filter>
