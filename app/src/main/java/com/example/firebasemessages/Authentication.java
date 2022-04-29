@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class Authentication extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText etEmail, etPassword;
-    private Button btLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +22,7 @@ public class Authentication extends AppCompatActivity {
 
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_password);
-        btLogin = findViewById(R.id.btn_login);
+        Button btLogin = findViewById(R.id.btn_login);
 
         mAuth = FirebaseAuth.getInstance();
 
