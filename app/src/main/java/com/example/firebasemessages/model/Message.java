@@ -1,31 +1,33 @@
 package com.example.firebasemessages.model;
 
-import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.GeoPoint;
 
-@Entity(tableName = "messages")
 public class Message {
 
+    private String id;
     private String firstname;
     private String lastname;
-    @NonNull
-    @PrimaryKey
-    private String picture;
-    private String latitude;
-    private String longitude;
     private String message;
+    private GeoPoint position;
 
     public Message() {
     }
 
-    public Message(String firstname, String lastname, @NonNull String picture, double latitude, double longitude, String message) {
+    public Message(String firstname, String lastname, double latitude, double longitude, String message) {
         this.firstname = firstname;
         this.lastname = lastname;
-        this.picture = picture;
-        this.latitude = Double.toString(latitude);
-        this.longitude = Double.toString(longitude);
+        this.position = new GeoPoint(latitude, longitude);
         this.message = message;
+    }
+
+    @Exclude
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstname() {
@@ -44,30 +46,6 @@ public class Message {
         this.lastname = lastname;
     }
 
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -76,4 +54,15 @@ public class Message {
         this.message = message;
     }
 
+    public String getLatitude() {
+        return String.valueOf(position.getLatitude());
+    }
+
+    public String getLongitude() {
+        return String.valueOf(position.getLongitude());
+    }
+
+    public void setPosition(double longitude, double latitude) {
+        this.position = new GeoPoint(longitude, latitude);
+    }
 }

@@ -46,6 +46,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -87,17 +88,10 @@ public class MapsFragment extends Fragment implements
             }
         };
 
-        mapsViewModel.getMessages().observe(getViewLifecycleOwner(), messages ->
-        {
-            if (mMap != null) {
-                mMap.clear();
-                for (Message marker : messages) {
-                    LatLng latLng = new LatLng(parseDouble(marker.getLatitude()), parseDouble(marker.getLongitude()));
-                    Objects.requireNonNull(mMap.addMarker(new MarkerOptions().position(latLng).title(marker.getMessage())))
-                            .setTag(marker.getPicture());
-                }
-            }
-        });
+        if (mMap != null) {
+            mMap.clear();
+            mapsViewModel.getMessages().observe(getViewLifecycleOwner(), this::createMarkers);
+        }
 
         tvDistance = root.findViewById(R.id.tv_distance);
         tvDistance.setVisibility(View.INVISIBLE);
@@ -161,14 +155,16 @@ public class MapsFragment extends Fragment implements
                 Looper.getMainLooper());
 
         mapsViewModel.getMessages().observe(getViewLifecycleOwner(),
-                messagesList -> {
-                    for (Message marker : messagesList) {
-                        LatLng latLng = new LatLng(parseDouble(marker.getLatitude()), parseDouble(marker.getLongitude()));
-                        Objects.requireNonNull(mMap.addMarker(new MarkerOptions().position(latLng).title(marker.getMessage())))
-                                .setTag(marker.getPicture());
-                    }
-                });
+                this::createMarkers);
 
+    }
+
+    private void createMarkers(List<Message> messagesList) {
+        for (Message marker : messagesList) {
+            LatLng latLng = new LatLng(parseDouble(marker.getLatitude()), parseDouble(marker.getLongitude()));
+            Objects.requireNonNull(mMap.addMarker(new MarkerOptions().position(latLng).title(marker.getMessage())))
+                    .setTag(marker.getLastname() + marker.getFirstname());
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -231,7 +227,7 @@ public class MapsFragment extends Fragment implements
         TextView tvMarker = view.findViewById(R.id.tv_marker);
         tvMarker.setText(marker.getTitle());
         ImageView ivMarker = view.findViewById(R.id.iv_marker);
-        String url = Objects.requireNonNull(marker.getTag()).toString();
+        String url = "https://robohash.org/" + marker.getTag();
         Picasso.get().load(url)
                 .fetch(new Callback() {
                     @Override

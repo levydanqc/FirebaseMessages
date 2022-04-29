@@ -53,13 +53,14 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_save:
-                Intent i = new Intent();
-                i.putExtra(getString(R.string.nav_header_prenom), etPrenom.getText().toString());
-                i.putExtra(getString(R.string.nav_header_nom), etNom.getText().toString());
-                setResult(RESULT_OK, i);
-                finish();
+        if (v.getId() == R.id.btn_save) {
+            Intent i = new Intent();
+            String nom = etNom.getText().toString();
+            String prenom = etPrenom.getText().toString();
+            i.putExtra(getString(R.string.nav_header_prenom), prenom.substring(0, 1).toUpperCase() + prenom.substring(1).toLowerCase());
+            i.putExtra(getString(R.string.nav_header_nom), nom.substring(0, 1).toUpperCase() + nom.substring(1).toLowerCase());
+            setResult(RESULT_OK, i);
+            finish();
         }
     }
 }

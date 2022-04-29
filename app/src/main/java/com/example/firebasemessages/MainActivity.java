@@ -13,24 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.firebasemessages.data.AppExecutors;
-import com.example.firebasemessages.data.MessagesRoomDatabase;
 import com.example.firebasemessages.databinding.ActivityMainBinding;
-import com.example.firebasemessages.http.VolleyUtils;
-import com.example.firebasemessages.model.Message;
-import com.example.firebasemessages.ui.liste.ListeViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private MessagesRoomDatabase mDb;
     private TextView tvNom;
     private TextView tvPrenom;
     private final int REQUEST_CODE = 1234;
@@ -38,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mDb = MessagesRoomDatabase.getDatabase(this);
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -56,18 +47,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-        ListeViewModel listeViewModel = new ViewModelProvider(this).get(ListeViewModel.class);
-
-        if (listeViewModel.getMessages().getValue() == null || listeViewModel.getMessages().getValue().size() < 1) {
-            new VolleyUtils().getMessages(this,
-                    messagesArrayList -> AppExecutors.getInstance().diskIO().execute(() -> {
-                        mDb.messageDao().deleteAll();
-                        for (Message article : messagesArrayList) {
-                            mDb.messageDao().insert(article);
-                        }
-                    }));
-        }
 
         View header = navigationView.getHeaderView(0);
         tvPrenom = (TextView) header.findViewById(R.id.tv_prenom);
