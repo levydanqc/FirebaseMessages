@@ -43,9 +43,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -64,6 +72,11 @@ public class MapsFragment extends Fragment implements
     private TextView tvDistance;
     private MapsViewModel mapsViewModel;
     private LatLng selected;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference collection = db.collection("messages");
+    ListenerRegistration registration;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -88,15 +101,61 @@ public class MapsFragment extends Fragment implements
             }
         };
 
-        if (mMap != null) {
-            mMap.clear();
-            mapsViewModel.getMessages().observe(getViewLifecycleOwner(), this::createMarkers);
-        }
+//        if (mMap != null) {
+//            mapsViewModel.getMessages().observe(getViewLifecycleOwner(), this::createMarkers);
+//        }
 
         tvDistance = root.findViewById(R.id.tv_distance);
         tvDistance.setVisibility(View.INVISIBLE);
 
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+//        collection.document("KIFz9BezVHsi8blSNBBa").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document != null) {
+//                        document.getString("firstname");
+//                    }
+//                }
+//            }
+//        });
+        registration = collection
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (value != null) {
+                            List<Message> markers = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : value) {
+                                Message marker = document.toObject(Message.class);
+                                marker.setId(document.getId());
+                                markers.add(marker);
+                            }
+                            createMarkers(markers);
+                        }
+                    }
+                });
+//                .addSnapshotListener((value, error) -> {
+//                    assert value != null;
+//                    List<Message> markers = new ArrayList<>();
+//                    for (QueryDocumentSnapshot document : value) {
+//                        Message marker = document.toObject(Message.class);
+//                        marker.setId(document.getId());
+//                        markers.add(marker);
+//                    }
+//                    createMarkers(markers);
+//                });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        registration.remove();
     }
 
     @Override
@@ -108,12 +167,6 @@ public class MapsFragment extends Fragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (getArguments() != null && getArguments().size() > 0) {
-            String lat = MapsFragmentArgs.fromBundle(getArguments()).getLatitude();
-            String lon = MapsFragmentArgs.fromBundle(getArguments()).getLongitude();
-            selected = new LatLng(parseDouble(lat), parseDouble(lon));
-        }
     }
 
 
@@ -154,12 +207,13 @@ public class MapsFragment extends Fragment implements
                 locationCallback,
                 Looper.getMainLooper());
 
-        mapsViewModel.getMessages().observe(getViewLifecycleOwner(),
-                this::createMarkers);
+//        mapsViewModel.getMessages().observe(getViewLifecycleOwner(),
+//                this::createMarkers);
 
     }
 
     private void createMarkers(List<Message> messagesList) {
+        mMap.clear();
         for (Message marker : messagesList) {
             LatLng latLng = new LatLng(parseDouble(marker.getLatitude()), parseDouble(marker.getLongitude()));
             Objects.requireNonNull(mMap.addMarker(new MarkerOptions().position(latLng).title(marker.getMessage())))
