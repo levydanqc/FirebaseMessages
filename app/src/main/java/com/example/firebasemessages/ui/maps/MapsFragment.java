@@ -25,7 +25,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.firebasemessages.R;
 import com.example.firebasemessages.databinding.FragmentMapsBinding;
@@ -47,6 +46,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -54,8 +54,10 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class MapsFragment extends Fragment implements
@@ -70,8 +72,6 @@ public class MapsFragment extends Fragment implements
     private LocationCallback locationCallback;
     private Location userLocation;
     private TextView tvDistance;
-    private MapsViewModel mapsViewModel;
-    private LatLng selected;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("messages");
@@ -80,8 +80,6 @@ public class MapsFragment extends Fragment implements
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mapsViewModel = new ViewModelProvider(requireActivity()).get(MapsViewModel.class);
-
         binding = FragmentMapsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -193,16 +191,13 @@ public class MapsFragment extends Fragment implements
             return;
         }
 
-        if (selected != null) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(selected, 15));
-        } else {
-            fusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(requireActivity(), location -> {
-                        if (location != null) {
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
-                        }
-                    });
-        }
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(requireActivity(), location -> {
+                    if (location != null) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+                    }
+                });
+
         fusedLocationProviderClient.requestLocationUpdates(locationRequest,
                 locationCallback,
                 Looper.getMainLooper());
@@ -281,6 +276,7 @@ public class MapsFragment extends Fragment implements
         TextView tvMarker = view.findViewById(R.id.tv_marker);
         tvMarker.setText(marker.getTitle());
         ImageView ivMarker = view.findViewById(R.id.iv_marker);
+        ivMarker.setImageResource(R.drawable.ic_baseline_account_circle_24);
         String url = "https://robohash.org/" + marker.getTag();
         Picasso.get().load(url)
                 .fetch(new Callback() {
@@ -321,11 +317,6 @@ public class MapsFragment extends Fragment implements
     public void onMapLongClick(@NonNull LatLng latLng) {
         Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(""));
 
-        NavigationView navigationView = (NavigationView) requireActivity().findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        String nom = ((TextView) headerView.findViewById(R.id.tv_nom)).getText().toString();
-        String prenom = ((TextView) headerView.findViewById(R.id.tv_prenom)).getText().toString();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Ajout d'un marker");
 
@@ -341,7 +332,13 @@ public class MapsFragment extends Fragment implements
                 return;
             }
             marker.setTitle(input.getText().toString());
-            String url = mapsViewModel.addMarker(marker, prenom, nom);
+
+            NavigationView navigationView = (NavigationView) requireActivity().findViewById(R.id.nav_view);
+            View headerView = navigationView.getHeaderView(0);
+            String nom = ((TextView) headerView.findViewById(R.id.tv_nom)).getText().toString();
+            String prenom = ((TextView) headerView.findViewById(R.id.tv_prenom)).getText().toString();
+
+            String url = addMarker(marker, nom, prenom);
             marker.setTag(url);
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> {
@@ -353,6 +350,23 @@ public class MapsFragment extends Fragment implements
         builder.show();
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
+    private String addMarker(Marker marker, String nom, String prenom) {
+        String url = "https://robohash.org/" + nom + prenom;
+        Map<String, Object> message = new HashMap<>();
+        message.put("firstname", prenom);
+        message.put("lastname", nom);
+        message.put("message", marker.getTitle());
+        message.put("position", new GeoPoint(marker.getPosition().latitude, marker.getPosition().longitude));
+
+        db.collection("messages").add(message)
+                .addOnSuccessListener(documentReference ->
+                        Toast.makeText(requireContext(), "Marker ajouté !",
+                                Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Erreur dans l'ajout !",
+                        Toast.LENGTH_SHORT).show());
+        return url;
     }
 
 }
