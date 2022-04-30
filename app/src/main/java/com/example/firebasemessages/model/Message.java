@@ -62,7 +62,11 @@ public class Message {
         return String.valueOf(position.getLongitude());
     }
 
-    public void setPosition(double longitude, double latitude) {
-        this.position = new GeoPoint(longitude, latitude);
+    public GeoPoint getPosition() {
+        return position;
+    }
+
+    public void setPosition(GeoPoint position) {
+        this.position = position;
     }
 }

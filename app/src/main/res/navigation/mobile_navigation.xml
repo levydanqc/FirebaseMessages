@@ -3,28 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_liste">
-
-    <fragment
-        android:id="@+id/nav_liste"
-        android:name="com.example.firebasemessages.ui.liste.ListeFragment"
-        android:label="@string/menu_liste"
-        tools:layout="@layout/fragment_liste">
-        <action
-            android:id="@+id/action_nav_liste_to_nav_maps"
-            app:destination="@id/nav_maps" />
-    </fragment>
+    app:startDestination="@+id/nav_maps">
 
     <fragment
         android:id="@+id/nav_maps"
         android:name="com.example.firebasemessages.ui.maps.MapsFragment"
         android:label="@string/menu_maps"
-        tools:layout="@layout/fragment_maps">
-        <argument
-            android:name="latitude"
-            app:argType="string" />
-        <argument
-            android:name="longitude"
-            app:argType="string" />
-    </fragment>
+        tools:layout="@layout/fragment_maps" />
 </navigation>
