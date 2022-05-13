@@ -1,9 +1,13 @@
 package com.example.firebasemessages;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,12 +16,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.firebasemessages.broadcast.BroadCastReceiver;
 import com.example.firebasemessages.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
 
@@ -27,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvNom;
     private TextView tvPrenom;
     private final int REQUEST_CODE = 1234;
+    private BroadCastReceiver broadcastReceiver = new BroadCastReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECEIVE_SMS}, REQUEST_CODE);
+        }
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_maps)
                 .setOpenableLayout(drawer)
                 .build();
@@ -51,6 +65,19 @@ public class MainActivity extends AppCompatActivity {
         tvPrenom = (TextView) header.findViewById(R.id.tv_prenom);
         tvNom = (TextView) header.findViewById(R.id.tv_nom);
         createView();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filterSms = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
+        registerReceiver(broadcastReceiver, filterSms);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(broadcastReceiver);
     }
 
     void writeSharePreferences(String prenom, String nom) {
