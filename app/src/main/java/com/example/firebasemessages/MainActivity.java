@@ -74,12 +74,6 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(broadcastReceiver, filterSms);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(broadcastReceiver);
-    }
-
     void writeSharePreferences(String prenom, String nom) {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
