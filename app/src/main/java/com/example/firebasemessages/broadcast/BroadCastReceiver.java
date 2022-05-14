@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -22,7 +23,6 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class BroadCastReceiver extends BroadcastReceiver {
     private NotificationManagerCompat notificationManager;
@@ -34,47 +34,50 @@ public class BroadCastReceiver extends BroadcastReceiver {
             String messageSms = sms[0].getDisplayMessageBody();
 
             String[] parts = messageSms.split(", ");
-            String strLatitude = parts[parts.length - 2].replace("+", "").replace("-", "");
-            String strLongitude = parts[parts.length - 1].replace("+", "").replace("-", "");
-            if (parts.length == 5 && Pattern.matches("([0-9]+)[.]([0-9]+)", strLatitude)
-                    && Pattern.matches("([0-9]+)[.]([0-9]+)", strLongitude)) {
-                Map<String, Object> message = new HashMap<>();
-                message.put("firstname", parts[0]);
-                message.put("lastname", parts[1]);
-                message.put("message", parts[2]);
-                message.put("position", new GeoPoint(Double.parseDouble(parts[3]), Double.parseDouble(parts[4])));
+            if (parts.length == 5) {
+                try {
+                    String strLatitude = parts[parts.length - 2].replace("+", "").replace("-", "");
+                    String strLongitude = parts[parts.length - 1].replace("+", "").replace("-", "");
+                    Map<String, Object> message = new HashMap<>();
+                    message.put("firstname", parts[0]);
+                    message.put("lastname", parts[1]);
+                    message.put("message", parts[2]);
+                    message.put("position", new GeoPoint(Double.parseDouble(parts[3]), Double.parseDouble(parts[4])));
 
-                MapsFragment.getInstance().addToFirebase(message);
-                Toast.makeText(context, "SMS reçu et ajouté !", Toast.LENGTH_SHORT).show();
+                    MapsFragment.getInstance().addToFirebase(message);
+                    Toast.makeText(context, "SMS reçu et ajouté !", Toast.LENGTH_SHORT).show();
 
-                notificationManager = NotificationManagerCompat.from(context);
-                String title = "FirebaseMessages";
-                String content = "Ajout d'un SMS à la map";
+                    notificationManager = NotificationManagerCompat.from(context);
+                    String title = "FirebaseMessages";
+                    String content = "Ajout d'un SMS à la map";
 
-                Intent i = new Intent(context, AuthenticationActivity.class);
+                    Intent i = new Intent(context, AuthenticationActivity.class);
 
-                PendingIntent contentPendingIntent = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                    contentPendingIntent = PendingIntent.getActivity
-                            (context, 0, i,
-                                    PendingIntent.FLAG_MUTABLE);
-                } else {
-                    contentPendingIntent = PendingIntent.getActivity
-                            (context, 0, i,
-                                    PendingIntent.FLAG_IMMUTABLE);
+                    PendingIntent contentPendingIntent = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                        contentPendingIntent = PendingIntent.getActivity
+                                (context, 0, i,
+                                        PendingIntent.FLAG_MUTABLE);
+                    } else {
+                        contentPendingIntent = PendingIntent.getActivity
+                                (context, 0, i,
+                                        PendingIntent.FLAG_IMMUTABLE);
+                    }
+                    Notification notification = new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.drawable.ic_baseline_map_24)
+                            .setContentTitle(title)
+                            .setContentText(content)
+                            .setChannelId(CHANNEL_1_ID)
+                            .setContentIntent(contentPendingIntent)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                            .build();
+                    notificationManager.notify(165543, notification);
+
+                    MapsFragment.getInstance().playSound();
+                } catch (Exception e) {
+                    Log.d("Exception", e.toString());
                 }
-                Notification notification = new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_baseline_map_24)
-                        .setContentTitle(title)
-                        .setContentText(content)
-                        .setChannelId(CHANNEL_1_ID)
-                        .setContentIntent(contentPendingIntent)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                        .build();
-                notificationManager.notify(165543, notification);
-
-                MapsFragment.getInstance().playSound();
             }
 
         }
