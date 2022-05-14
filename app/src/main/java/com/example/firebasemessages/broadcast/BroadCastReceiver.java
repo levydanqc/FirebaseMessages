@@ -73,7 +73,10 @@ public class BroadCastReceiver extends BroadcastReceiver {
                         .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                         .build();
                 notificationManager.notify(165543, notification);
+
+                MapsFragment.getInstance().playSound();
             }
+
         }
     }
 }

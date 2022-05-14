@@ -4,6 +4,7 @@ import static java.lang.Double.parseDouble;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import androidx.fragment.app.Fragment;
 import com.example.firebasemessages.R;
 import com.example.firebasemessages.databinding.FragmentMapsBinding;
 import com.example.firebasemessages.model.Message;
+import com.example.firebasemessages.services.SoundEffectService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -73,6 +75,7 @@ public class MapsFragment extends Fragment implements
     private Location userLocation;
     private TextView tvDistance;
     private static MapsFragment instance;
+    private Intent serviceIntent;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collection = db.collection("messages");
@@ -101,10 +104,6 @@ public class MapsFragment extends Fragment implements
             }
         };
 
-//        if (mMap != null) {
-//            mapsViewModel.getMessages().observe(getViewLifecycleOwner(), this::createMarkers);
-//        }
-
         tvDistance = root.findViewById(R.id.tv_distance);
         tvDistance.setVisibility(View.INVISIBLE);
 
@@ -118,17 +117,6 @@ public class MapsFragment extends Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-//        collection.document("KIFz9BezVHsi8blSNBBa").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document != null) {
-//                        document.getString("firstname");
-//                    }
-//                }
-//            }
-//        });
         registration = collection
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -144,16 +132,6 @@ public class MapsFragment extends Fragment implements
                         }
                     }
                 });
-//                .addSnapshotListener((value, error) -> {
-//                    assert value != null;
-//                    List<Message> markers = new ArrayList<>();
-//                    for (QueryDocumentSnapshot document : value) {
-//                        Message marker = document.toObject(Message.class);
-//                        marker.setId(document.getId());
-//                        markers.add(marker);
-//                    }
-//                    createMarkers(markers);
-//                });
     }
 
     @Override
@@ -171,6 +149,17 @@ public class MapsFragment extends Fragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    public void playSound() {
+        int audio = R.raw.gotitem;
+        serviceIntent = new Intent(requireActivity(), SoundEffectService.class);
+        serviceIntent.putExtra("audio", audio);
+        try {
+            requireActivity().startService(serviceIntent);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
 
